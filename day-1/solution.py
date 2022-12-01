@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-Solution to Day 1 of the Advent of Code 2022 event. 
+Solution to Day 1 of the Advent of Code 2022 event.
 
 https://adventofcode.com/2022/day/1
 
@@ -16,7 +16,9 @@ class Solution():
 
     def __init__(self):
         self.get_arguments()
-        self.result = self.get_solution()
+        self.calories_by_elf = self.get_groupings_from_file(self.args.input)
+        self.result_part_one = self.calories_by_elf[self.get_max()]
+        self.result_part_two = self.get_top_three()
 
     def get_arguments(self):
         """
@@ -27,12 +29,22 @@ class Solution():
                             help="Input file")
         self.args = parser.parse_args()
 
-    def get_solution(self):
+    def get_max(self):
         """
-        Returns the largest amount of calories
+        Returns the elf with the largest amount of calories
         """
-        calories_by_elf = self.get_groupings_from_file(self.args.input)
-        return max(calories_by_elf.values())
+        return max(self.calories_by_elf, key=self.calories_by_elf.get)
+
+    def get_top_three(self):
+        """
+        Returns the sum of the top 3 largest amount of calories
+        """
+        result = []
+        for elf in range(3):
+            current_max_elf = self.get_max()
+            result += [self.calories_by_elf[current_max_elf]]
+            self.calories_by_elf.pop(current_max_elf)
+        return sum(result)
 
     def get_groupings_from_file(self, input_file):
         """
@@ -55,4 +67,5 @@ class Solution():
 
 if __name__ == "__main__":
     solution = Solution()
-    print(solution.result)
+    print(f"Solution Part One : {solution.result_part_one}")
+    print(f"Solution Part Two : {solution.result_part_two}")
