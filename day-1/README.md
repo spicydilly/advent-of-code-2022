@@ -61,4 +61,4 @@ Call the script `solution.py` with the following command:
 python3 solution.py --input input.txt
 ```
 
-This will print the max total calories that an elf consumed.
+This will print the solution to both challenges above.
