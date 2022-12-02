@@ -1,5 +1,10 @@
+#!/usr/bin/python
 """
+Solution to Day 2 of the Advent of Code 2022 event.
 
+https://adventofcode.com/2022/day/2
+
+Usage   : call with 'solution.py --input <input file name>'
 """
 
 import argparse
@@ -20,11 +25,6 @@ class Solution():
         "Z": {"A": "Y", "B": "Z", "C": "X"}
     }
 
-    def __init__(self):
-        self.get_arguments()
-        self.result_part_one, self.result_part_two = self.get_game_rounds_from_file(
-            self.args.input)
-
     def get_arguments(self):
         """
         Handles the arguments that are available for this class
@@ -33,23 +33,30 @@ class Solution():
         parser.add_argument("--input", type=str, required=False,
                             help="Input file")
         self.args = parser.parse_args()
+        self.result_part_one = self.get_scoring_from_file(
+            self.args.input)
+        self.result_part_two = self.get_scoring_from_file(
+            self.args.input, True)
 
-    def get_game_rounds_from_file(self, input_file):
+    def get_scoring_from_file(self, input_file, use_strategy=False):
         """
         Reads the input file and returns the score of the player
         """
-        score_part_one, score_part_two = 0, 0
+        score = 0
         with open(input_file, 'r') as f:
             # split by empty newlines in file
             for round in f.read().split("\n"):
                 # split by line, ignoring empty if the value is empty
                 if round:
                     opponent, mine = round.split()
-                    score_part_one += self.determine_score_player_input(
-                        opponent, mine)
-                    score_part_two += self.determine_score_when_result(
-                        opponent, mine)
-        return score_part_one, score_part_two
+                    if use_strategy:
+                        score += self.determine_score_when_strategy(
+                            opponent, mine)
+                    else:
+                        score += self.determine_score_player_input(
+                            opponent, mine)
+
+        return score
 
     def determine_score_player_input(self, opponent, mine):
         """
@@ -68,9 +75,9 @@ class Solution():
         """
         return self.SCORING_RESULT[opponent][mine] + self.SCORING_CHOICE[mine]
 
-    def determine_score_when_result(self, opponent, mine):
+    def determine_score_when_strategy(self, opponent, mine):
         """
-        Returns score of each round, when result is specified
+        Returns score of each round, when strategy is specified
 
         Notes:
             X; Lose
@@ -82,5 +89,6 @@ class Solution():
 
 if __name__ == "__main__":
     solution = Solution()
+    solution.get_arguments()
     print(f"Solution Part One : {solution.result_part_one}")
     print(f"Solution Part Two : {solution.result_part_two}")
