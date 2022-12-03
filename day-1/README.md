@@ -14,7 +14,6 @@ The Elves take turns writing down the number of Calories contained by the variou
 
 For example, suppose the Elves finish writing their items' Calories and end up with the following list:
 
-```txt
     1000
     2000
     3000
@@ -29,7 +28,6 @@ For example, suppose the Elves finish writing their items' Calories and end up w
     9000
 
     10000
-```
 
 This list represents the Calories of the food carried by five Elves:
 
@@ -53,12 +51,16 @@ In the example above, the top three Elves are the fourth Elf (with 24000 Calorie
 
 **Find the top three Elves carrying the most Calories. How many Calories are those Elves carrying in total?**
 
+## Tests
+
+Run tests with the following command, when inside the directory:
+
+    pytest
+
 ## Solution
 
-Call the script `solution.py` with the following command:
+Call the script `solution.py` with the following command, when inside the directory:
 
-```sh
-python3 solution.py --input input.txt
-```
+    python3 solution.py --input input.txt
 
 This will print the solution to both challenges above.
