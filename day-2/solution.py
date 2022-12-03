@@ -44,7 +44,6 @@ class Solution():
         """
         score = 0
         with open(input_file, 'r') as f:
-            # split by empty newlines in file
             for round in f.read().split("\n"):
                 # split by line, ignoring empty if the value is empty
                 if round:
