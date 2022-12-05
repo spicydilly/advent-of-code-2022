@@ -9,12 +9,9 @@ Usage   : call with 'solution.py --input <input file name>'
 
 import argparse
 from ast import parse
-import string
 
 
 class Solution():
-
-    PRIORITIES = dict(zip(string.ascii_letters, range(1, 53)))
 
     def get_arguments(self):
         """
