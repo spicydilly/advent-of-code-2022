@@ -14,20 +14,22 @@ The Elves take turns writing down the number of Calories contained by the variou
 
 For example, suppose the Elves finish writing their items' Calories and end up with the following list:
 
-    1000
-    2000
-    3000
+```txt
+1000
+2000
+3000
 
-    4000
+4000
 
-    5000
-    6000
+5000
+6000
 
-    7000
-    8000
-    9000
+7000
+8000
+9000
 
-    10000
+10000
+```
 
 This list represents the Calories of the food carried by five Elves:
 
@@ -55,12 +57,16 @@ In the example above, the top three Elves are the fourth Elf (with 24000 Calorie
 
 Run tests with the following command, when inside the directory:
 
-    pytest
+```sh
+pytest
+```
 
 ## Solution
 
 Call the script `solution.py` with the following command, when inside the directory:
 
-    python3 solution.py --input input.txt
+```sh
+python3 solution.py --input input.txt
+```
 
 This will print the solution to both challenges above.
