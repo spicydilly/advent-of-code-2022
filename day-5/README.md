@@ -1,4 +1,4 @@
-# Day 4: Supply Stacks
+# Day 5: Supply Stacks
 
 ## Challenge Part One
 
