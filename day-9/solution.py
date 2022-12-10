@@ -87,7 +87,7 @@ class Solution():
         """
         direction = instruction[0]
         amount = int(instruction[1])
-        for i in range(1, int(amount)+1):
+        for _ in range(1, int(amount)+1):
             match direction:
                 case "R":
                     rope[0].pos_x += 1
