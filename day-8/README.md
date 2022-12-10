@@ -1,4 +1,4 @@
-# Day 8: Treetop Tree House ---
+# Day 8: Treetop Tree House
 
 ## Challenge Part One
 
