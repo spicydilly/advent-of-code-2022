@@ -6,3 +6,4 @@ docker rm $(docker stop $(docker ps -a -q --filter ancestor=${app} --format="{{.
 
 docker build -t ${app} .
 docker run -d -p 5000:5000 ${app}
+#docker run -it --rm -p 5000:5000 ${app} sh
