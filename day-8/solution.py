@@ -27,7 +27,7 @@ class Solution():
 
     def process_file(self, input_file):
         """
-        Reads the input file, returns directory as dictionary
+        Reads the input file
         """
         with open(input_file, 'r') as f:
             self.trees_grid = f.read().splitlines()
