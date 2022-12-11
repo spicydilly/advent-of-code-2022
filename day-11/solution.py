@@ -121,13 +121,14 @@ class Solution():
         """
         This function completes rounds
         """
-        for _ in range(number_of_rounds):
+        for roun in range(number_of_rounds):
             for monkey in self.monkeys:
                 for _ in range(len(monkey.holding)):
                     item = monkey.holding[0]
                     throw_to = monkey.take_turn()
                     if throw_to:
                         self.monkeys[int(throw_to)].holding.append(item)
+            print(roun)
 
     def get_level_monkey_business(self):
         """
