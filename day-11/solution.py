@@ -118,6 +118,8 @@ class Solution():
                 on_false = insructions[5][-1]
                 monkey = Monkey(holding, operation, test, on_true, on_false)
                 self.monkeys.append(monkey)
+        # neat trick to keep numbers small, use least common multiple(lcm)
+        # eg, divide by lcm and set the remainder as the worry level
         if no_divide:
             no_divide = 1
             for monkey in self.monkeys:
