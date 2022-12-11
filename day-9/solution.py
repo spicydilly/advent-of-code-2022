@@ -60,7 +60,7 @@ class Solution():
 
     def process_file(self, input_file, number_of_knots):
         """
-        Reads the input file, returns directory as dictionary
+        Reads the input file
         """
         self.number_of_knots = number_of_knots
         self.rope = [
