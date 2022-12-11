@@ -23,7 +23,7 @@ class Monkey():
         self.on_false = on_false
         self.inspections = 0
 
-    def take_turn(self):
+    def take_turn(self, no_divide):
         """
         Completes one turn for monkey, using the first
             item it is holding.
@@ -31,13 +31,13 @@ class Monkey():
         """
         if self.holding:
             holding = self.holding[0]
-            self.do_operation(holding)
+            self.do_operation(holding, no_divide)
             throw_to = self.do_test(holding)
             self.holding.pop(0)
             return throw_to
         return False
 
-    def do_operation(self, item):
+    def do_operation(self, item, no_divide):
         """
         Returns new worry level after item is inspected
         """
@@ -50,8 +50,10 @@ class Monkey():
                 item.worry *= int(value)
             case "+":
                 item.worry += int(value)
-        # monkey gets bored
-        item.worry = item.worry // 3
+        if no_divide:
+            item.worry = item.worry % no_divide
+        else:
+            item.worry = item.worry // 3
 
     def do_test(self, item):
         """
@@ -92,15 +94,16 @@ class Solution():
         parser.add_argument("--input", type=str, required=True,
                             help="Input file")
         args = parser.parse_args()
-        self.process_file(args.input, 20)
+        self.process_file(args.input, 20, False)
         self.result_part_one = self.get_level_monkey_business()
-        self.process_file(args.input, 10000)
+        self.process_file(args.input, 10000, True)
         self.result_part_two = self.get_level_monkey_business()
 
-    def process_file(self, input_file, number_of_rounds):
+    def process_file(self, input_file, number_of_rounds, no_divide):
         """
         Reads the input file
         """
+        self.monkeys = []
         with open(input_file, 'r', encoding="utf-8") as f:
             monkeys = f.read().split("\n\n")
             for each in monkeys:
@@ -115,20 +118,23 @@ class Solution():
                 on_false = insructions[5][-1]
                 monkey = Monkey(holding, operation, test, on_true, on_false)
                 self.monkeys.append(monkey)
-        self.run_rounds(number_of_rounds)
+        if no_divide:
+            no_divide = 1
+            for monkey in self.monkeys:
+                no_divide = no_divide * int(monkey.test)
+        self.run_rounds(number_of_rounds, no_divide)
 
-    def run_rounds(self, number_of_rounds):
+    def run_rounds(self, number_of_rounds, no_divide):
         """
         This function completes rounds
         """
-        for roun in range(number_of_rounds):
+        for _ in range(number_of_rounds):
             for monkey in self.monkeys:
                 for _ in range(len(monkey.holding)):
                     item = monkey.holding[0]
-                    throw_to = monkey.take_turn()
+                    throw_to = monkey.take_turn(no_divide)
                     if throw_to:
                         self.monkeys[int(throw_to)].holding.append(item)
-            print(roun)
 
     def get_level_monkey_business(self):
         """
