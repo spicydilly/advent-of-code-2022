@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-Solution to Day 11 of the Advent of Code 2022 event.
+Solution to Day 12 of the Advent of Code 2022 event.
 
 https://adventofcode.com/2022/day/11
 
@@ -10,72 +10,6 @@ Usage:
 """
 
 import argparse
-
-
-class Monkey():
-    """
-    Class that defines a Monkey
-    """
-
-    def __init__(self, holding, operation, test, on_true, on_false):
-        self.holding = holding
-        self.operation = operation
-        self.test = test
-        self.on_true = on_true
-        self.on_false = on_false
-        self.inspections = 0
-
-    def take_turn(self, no_divide):
-        """
-        Completes one turn for monkey, using the first
-            item it is holding.
-        Returns the monkey to throw the item too.
-        """
-        if self.holding:
-            holding = self.holding[0]
-            self.do_operation(holding, no_divide)
-            throw_to = self.do_test(holding)
-            self.holding.pop(0)
-            return throw_to
-        return False
-
-    def do_operation(self, item, no_divide):
-        """
-        Returns new worry level after item is inspected
-        """
-        self.inspections += 1
-        value = self.operation[1]
-        if value == "old":
-            value = item.worry
-        match(self.operation[0]):
-            case "*":
-                item.worry *= int(value)
-            case "+":
-                item.worry += int(value)
-        if no_divide:
-            item.worry = item.worry % no_divide
-        else:
-            item.worry = item.worry // 3
-
-    def do_test(self, item):
-        """
-        Completes test to determine who gets the item next
-        """
-        if int(item.worry) % int(self.test) == 0:
-            return self.on_true
-        return self.on_false
-
-
-class Item():
-    """
-    Defines items held by monkeys
-    """
-
-    def __init__(self, worry):
-        self.worry = int(worry.replace(",", ""))
-
-    def __str__(self):
-        return str(self.worry)
 
 
 class Solution():
