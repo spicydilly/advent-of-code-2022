@@ -8,40 +8,62 @@ Usage   : call with 'solution.py --input <input file name>'
 """
 
 import argparse
-from ast import parse
 
 
 class Solution():
+    """
+    Class that builds the solution
+    """
+
+    def __init__(self):
+        self.initial_stack = []
+        self.instructions = []
+        self.result_part_one = 0
+        self.result_part_two = 0
 
     def get_arguments(self):
         """
         Handles the arguments that are available for this class
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument("--input", type=str, required=False,
+        parser.add_argument("--input-file", type=str, required=False,
                             help="Input file")
-        self.args = parser.parse_args()
-        self.result_part_one = self.apply_stacking_instructions_from_file(
-            self.args.input)
-        self.result_part_two = self.apply_stacking_instructions_from_file(
-            self.args.input, True)
+        parser.add_argument("--input-text", type=str, required=False,
+                            help="Input text")
+        args = parser.parse_args()
+        if args.input_file:
+            self.process_input(args.input_file)
+            self.result_part_one = self.apply_stacking_instructions()
+            self.process_input(args.input_file)
+        elif args.input_text:
+            self.process_input(args.input_text, False)
+            self.result_part_one = self.apply_stacking_instructions()
+            self.process_input(args.input_text, False)
+        self.result_part_two = self.apply_stacking_instructions(True)
 
-    def apply_stacking_instructions_from_file(self, input_file, multiple=False):
+    def process_input(self, input_data, is_file=True):
+        """Proccesses the input"""
+        input_split = []
+        if is_file:
+            with open(input_data, 'r', encoding="utf-8") as file:
+                input_split = file.read().split("\n\n")
+        else:
+            input_split = input_data.split("\n\n")
+        # first section is initial stack
+        self.initial_stack = self.get_the_stack(
+            input_split[0].split("\n"))
+        self.instructions = self.get_the_instructions(
+            input_split[1].split("\n"))
+
+    def apply_stacking_instructions(self, multiple=False):
         """
-        Reads the input file and returns the new stack layout after stacking
+        Applies the instructions and returns the new stack layout after stacking
             instructions are completed
         """
         result = None
-        with open(input_file, 'r') as f:
-            # split by empty newlines in file
-            sections = f.read().split("\n\n")
-            # first section is initial stack
-            self.initial_stack = self.get_the_stack(sections[0].split("\n"))
-            instructions = self.get_the_instructions(
-                sections[1].split("\n"))
-            new_stack = self.complete_instructions(
-                instructions, self.initial_stack, multiple)
-            result = self.get_top_cases(new_stack)
+        new_stack = self.complete_instructions(
+            self.instructions, self.initial_stack, multiple)
+        result = self.get_top_cases(new_stack)
         return result
 
     def get_the_stack(self, stack_file_input):

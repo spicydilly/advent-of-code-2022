@@ -1,7 +1,9 @@
 import os
-from flask import Flask, render_template
-app = Flask(__name__)
+import importlib
+from flask import Flask, render_template, request
+import subprocess
 
+app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -17,9 +19,18 @@ def get_day(number):
     return render_template(template_name, n=number, info=problem)
 
 
-@ app.route('/day/<number>/solution')
-def get_solutions(number):
-    return "hello"
+@ app.route('/day/<number>/get_solution', methods=["GET", "POST"])
+def get_solution(number):
+    user_in = request.form.get('user_in')
+    solution = subprocess.check_output(
+        [
+            "python3",
+            f"day-{number}/solution.py",
+            "--input-text",
+            user_in
+        ]
+    )
+    return solution
 
 
 def readme_convert(number):

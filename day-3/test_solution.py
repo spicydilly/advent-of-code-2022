@@ -3,19 +3,23 @@ from solution import Solution
 
 def test_solution_example_part_one():
     solution = Solution()
-    assert solution.get_priorities_from_file("example_input.txt") == 157
+    solution.get_rucksacks_from_input("example_input.txt")
+    assert solution.get_priorities() == 157
 
 
 def test_solution_example_part_two():
     solution = Solution()
-    assert solution.get_group_badge_from_file("example_input.txt") == 70
+    solution.get_rucksacks_from_input("example_input.txt")
+    assert solution.get_group_badge() == 70
 
 
 def test_solution_real_input_part_one():
     solution = Solution()
-    assert solution.get_priorities_from_file("input.txt") == 8493
+    solution.get_rucksacks_from_input("input.txt")
+    assert solution.get_priorities() == 8493
 
 
 def test_solution_real_input_part_two():
     solution = Solution()
-    assert solution.get_group_badge_from_file("input.txt") == 2552
+    solution.get_rucksacks_from_input("input.txt")
+    assert solution.get_group_badge() == 2552

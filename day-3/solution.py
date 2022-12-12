@@ -4,46 +4,67 @@ Solution to Day 3 of the Advent of Code 2022 event.
 
 https://adventofcode.com/2022/day/3
 
-Usage   : call with 'solution.py --input <input file name>'
+Usage: 
+    If using an input file 'solution.py --input-file <input file name>'
+    If using text as input 'solution.py --input-text "<input>"'
 """
 
 import argparse
-from ast import parse
 import string
 
 
 class Solution():
+    """
+    Class that builds the solution
+    """
 
     PRIORITIES = dict(zip(string.ascii_letters, range(1, 53)))
+
+    def __init__(self):
+        self.rucksacks = []
+        self.result_part_one = 0
+        self.result_part_two = 0
 
     def get_arguments(self):
         """
         Handles the arguments that are available for this class
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument("--input", type=str, required=False,
+        parser.add_argument("--input-file", type=str, required=False,
                             help="Input file")
-        self.args = parser.parse_args()
-        self.result_part_one = self.get_priorities_from_file(
-            self.args.input)
-        self.result_part_two = self.get_group_badge_from_file(
-            self.args.input)
+        parser.add_argument("--input-text", type=str, required=False,
+                            help="Input text")
+        args = parser.parse_args()
+        if args.input_file:
+            self.get_rucksacks_from_input(args.input_file)
+        elif args.input_text:
+            self.get_rucksacks_from_input(args.input_text, False)
+        self.result_part_one = self.get_priorities()
+        self.result_part_two = self.get_group_badge()
 
-    def get_priorities_from_file(self, input_file):
+    def get_rucksacks_from_input(self, input_data, is_file=True):
+        """Proccesses the input"""
+        input_split = []
+        if is_file:
+            with open(input_data, 'r', encoding="utf-8") as file:
+                input_split = file.read().split("\n")
+        else:
+            input_split = input_data.split("\n")
+        self.rucksacks = input_split
+
+    def get_priorities(self):
         """
-        Reads the input file and returns the sum of priorities
+        Loops rucksacks and returns the sum of priorities
             of items that occur in both compartments of a rucksack
         """
         items = dict.fromkeys(string.ascii_letters, 0)
-        with open(input_file, 'r') as f:
-            # split by empty newlines in file
-            for rucksack in f.read().split("\n"):
-                # split by line, ignoring empty if the value is empty
-                if rucksack:
-                    items = self.combine_pirorities_dict_helper(
-                        items,
-                        self.find_items_in_both_compartments(rucksack)
-                    )
+        for rucksack in self.rucksacks:
+            # split by line, ignoring empty if the value is empty
+            if rucksack:
+                items = self.combine_pirorities_dict_helper(
+                    items,
+                    self.find_items_in_both_compartments(rucksack)
+                )
 
         return sum(items.values())
 
@@ -69,27 +90,25 @@ class Solution():
 
         return items
 
-    def get_group_badge_from_file(self, input_file):
+    def get_group_badge(self):
         """
-        Reads the input file and returns the sum of the priorities
+        Loops rucksacks and returns the sum of the priorities
             of all the badge groups
         """
         items = dict.fromkeys(string.ascii_letters, 0)
-        with open(input_file, 'r') as f:
-            line_count = 0
-            group = ""
-            for rucksack in f.read().split("\n"):
-                # split by line, ignoring empty if the value is empty
-                if rucksack:
-                    line_count += 1
-                    group += rucksack + " "
-                    if line_count == 3:
-                        items = self.combine_pirorities_dict_helper(
-                            items,
-                            self.find_common_items_in_group(group)
-                        )
-                        group = ""
-                        line_count = 0
+        line_count = 0
+        group = ""
+        for rucksack in self.rucksacks:
+            if rucksack:
+                line_count += 1
+                group += rucksack + " "
+                if line_count == 3:
+                    items = self.combine_pirorities_dict_helper(
+                        items,
+                        self.find_common_items_in_group(group)
+                    )
+                    group = ""
+                    line_count = 0
 
         return sum(items.values())
 

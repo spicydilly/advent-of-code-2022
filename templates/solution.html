@@ -1,5 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("button").click(function () {
+            var user_in = document.getElementById("user_in").value;
+            $.post("get_solution", { user_in: user_in }).done(function (reply) {
+                alert(reply);
+            });
+        });
+    });
+</script>
 
 <head>
     <meta charset="UTF-8">
@@ -8,6 +19,11 @@
 
 <body>
     {{ info|safe }}
+
+    <p><label for="user_in">Your Input:</label></p>
+    <textarea id="user_in" name="user_in" cols="40" rows="5"></textarea>
+    <button>Get Results</button>
+
 </body>
 
 </html>

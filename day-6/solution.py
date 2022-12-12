@@ -8,34 +8,49 @@ Usage   : call with 'solution.py --input <input file name>'
 """
 
 import argparse
-from ast import parse
 
 
 class Solution():
+    """
+    Class that builds the solution
+    """
+
+    def __init__(self):
+        self.result_part_one = 0
+        self.result_part_two = 0
 
     def get_arguments(self):
         """
         Handles the arguments that are available for this class
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument("--input", type=str, required=False,
+        parser.add_argument("--input-file", type=str, required=False,
                             help="Input file")
-        self.args = parser.parse_args()
-        self.result_part_one = self.process_file(
-            self.args.input, 4)
-        self.result_part_two = self.process_file(
-            self.args.input, 14)
+        parser.add_argument("--input-text", type=str, required=False,
+                            help="Input text")
+        args = parser.parse_args()
+        if args.input_file:
+            self.result_part_one = self.process_file(args.input_file, 4)
+            self.result_part_two = self.process_file(args.input_file, 14)
+        elif args.input_text:
+            self.result_part_one = self.process_file(args.input_text, 4, False)
+            self.result_part_two = self.process_file(
+                args.input_text, 14, False)
 
-    def process_file(self, input_file, marker_size):
+    def process_file(self, input_data, marker_size, is_file=True):
         """
-        Reads the input file and returns the number of characters
+        Reads the input and returns the number of characters
             that needed to be processes before the first start-of-packet
             marker is detected
         """
         result = None
-        with open(input_file, 'r') as f:
-            data = f.read()
-            result = self.get_start_of_packet(data, marker_size)[0]
+        data = ""
+        if is_file:
+            with open(input_data, 'r', encoding='utf-8') as file:
+                data = file.read()
+        else:
+            data = input_data
+        result = self.get_start_of_packet(data, marker_size)[0]
         return result
 
     def get_start_of_packet(self, data, marker_size):
