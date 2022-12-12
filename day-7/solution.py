@@ -4,11 +4,12 @@ Solution to Day 7 of the Advent of Code 2022 event.
 
 https://adventofcode.com/2022/day/7
 
-Usage   : call with 'solution.py --input <input file name>'
+Usage:
+    If using an input file 'solution.py --input-file <input file name>'
+    If using text as input 'solution.py --input-text "<input>"'
 """
 
 import argparse
-from ast import parse
 
 
 class FileSystem():
@@ -57,51 +58,64 @@ class FileSystem():
             self.current_dir = "/"
         else:
             self.current_dir += target_directory + "/"
-        return
 
     def get_directory_sizes(self):
         """
         Returns a dictionary of the directories along with their sizes
         """
         dict_dir = {dir: self.file_system[dir] for dir in self.file_system}
-        for dir in dict_dir:
-            dict_dir[dir] = self.file_system[dir]["size"]
+        for dir_i in dict_dir:
+            dict_dir[dir_i] = self.file_system[dir_i]["size"]
             for dir2 in dict_dir:
-                if dir == dir2:
+                if dir_i == dir2:
                     continue
-                if dir in dir2:
-                    dict_dir[dir] += self.file_system[dir2]["size"]
+                if dir_i in dir2:
+                    dict_dir[dir_i] += self.file_system[dir2]["size"]
         return dict_dir
 
 
 class Solution():
+    """
+    Class that builds the solution
+    """
 
     def __init__(self):
         self.file_system = FileSystem()
+        self.result_part_one = 0
+        self.result_part_two = 0
 
     def get_arguments(self):
         """
         Handles the arguments that are available for this class
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument("--input", type=str, required=False,
+        parser.add_argument("--input-file", type=str, required=False,
                             help="Input file")
-        self.args = parser.parse_args()
-        self.process_file(self.args.input)
+        parser.add_argument("--input-text", type=str, required=False,
+                            help="Input text")
+        args = parser.parse_args()
+        if args.input_file:
+            self.process_file(args.input_file)
+        elif args.input_text:
+            self.process_file(args.input_text, False)
         self.result_part_one = self.get_sum_of_directories_that_meet_size(
             100000)
         self.result_part_two = self.smallest_directory_to_delete_to_meet_space(
             70000000, 30000000)
 
-    def process_file(self, input_file):
+    def process_file(self, input_data, is_file=True):
         """
-        Reads the input file, returns directory as dictionary
+        Reads the input, returns directory as dictionary
         """
-        with open(input_file, 'r') as f:
-            data = f.read()
-            for line in data.split("\n"):
-                if line:
-                    self.determine_output(line)
+        data = ""
+        if is_file:
+            with open(input_data, 'r', encoding='utf-8') as file:
+                data = file.read()
+        else:
+            data = input_data
+        for line in data.split("\n"):
+            if line:
+                self.determine_output(line)
         return self.file_system
 
     def determine_output(self, line):

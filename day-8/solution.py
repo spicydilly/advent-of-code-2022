@@ -4,57 +4,74 @@ Solution to Day 8 of the Advent of Code 2022 event.
 
 https://adventofcode.com/2022/day/8
 
-Usage   : call with 'solution.py --input <input file name>'
+Usage:
+    If using an input file 'solution.py --input-file <input file name>'
+    If using text as input 'solution.py --input-text "<input>"'
 """
 
 import argparse
-from ast import parse
 
 
 class Solution():
+    """
+    Class that builds the solution
+    """
+
+    def __init__(self):
+        self.trees_grid = []
+        self.result_part_one = 0
+        self.result_part_two = 0
 
     def get_arguments(self):
         """
         Handles the arguments that are available for this class
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument("--input", type=str, required=False,
+        parser.add_argument("--input-file", type=str, required=False,
                             help="Input file")
-        self.args = parser.parse_args()
-        self.process_file(self.args.input)
+        parser.add_argument("--input-text", type=str, required=False,
+                            help="Input text")
+        args = parser.parse_args()
+        if args.input_file:
+            self.process_file(args.input_file)
+        elif args.input_text:
+            self.process_file(args.input_text, False)
         self.result_part_one = self.get_number_of_visible_trees()
         self.result_part_two = self.find_ideal_view()
 
-    def process_file(self, input_file):
+    def process_file(self, input_data, is_file=True):
         """
-        Reads the input file
+        Reads the input
         """
-        with open(input_file, 'r') as f:
-            self.trees_grid = f.read().splitlines()
-        return self.trees_grid
+        if is_file:
+            with open(input_data, 'r', encoding='utf-8') as file:
+                self.trees_grid = file.read().splitlines()
+        else:
+            self.trees_grid = input_data.strip().split("\n")
 
     def get_number_of_visible_trees(self):
         """
         Returns number of visible trees
         """
         count = 0
-        for row in range(len(self.trees_grid)):
-            for col in range(len(self.trees_grid)):
-                current = self.trees_grid[row][col]
+        for i_row, row_element in enumerate(self.trees_grid):
+            for i_col, _ in enumerate(self.trees_grid):
+                current = row_element[i_col]
                 # check if edge
-                if row == 0 or row == len(self.trees_grid)-1 or col == 0 or col == len(self.trees_grid[0])-1:
+                if (i_row == 0 or i_row == len(self.trees_grid)-1 or i_col == 0
+                        or i_col == len(self.trees_grid[0])-1):
                     count += 1
                 # check right
-                elif self.check_if_visible_left_right(current, self.trees_grid[row][col+1:], "r")[1]:
+                elif self.check_if_visible_left_right(current, row_element[i_col+1:], "r")[1]:
                     count += 1
                 # check left
-                elif self.check_if_visible_left_right(current, self.trees_grid[row][:col], "l")[1]:
+                elif self.check_if_visible_left_right(current, row_element[:i_col], "l")[1]:
                     count += 1
                 # check up
-                elif self.check_if_visible_up_down(current, self.trees_grid[:row], col, "u")[1]:
+                elif self.check_if_visible_up_down(current, self.trees_grid[:i_row], i_col, "u")[1]:
                     count += 1
                 # check down
-                elif self.check_if_visible_up_down(current, self.trees_grid[row+1:], col, "d")[1]:
+                elif self.check_if_visible_up_down(current, self.trees_grid[i_row+1:], i_col, "d")[1]:
                     count += 1
         return count
 

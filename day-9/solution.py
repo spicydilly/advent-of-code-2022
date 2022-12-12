@@ -4,7 +4,9 @@ Solution to Day 9 of the Advent of Code 2022 event.
 
 https://adventofcode.com/2022/day/9
 
-Usage   : call with 'solution.py --input <input file name>'
+Usage:
+    If using an input file 'solution.py --input-file <input file name>'
+    If using text as input 'solution.py --input-text "<input>"'
 """
 
 import argparse
@@ -50,15 +52,22 @@ class Solution():
         Handles the arguments that are available for this class
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument("--input", type=str, required=True,
+        parser.add_argument("--input-file", type=str, required=False,
                             help="Input file")
+        parser.add_argument("--input-text", type=str, required=False,
+                            help="Input text")
         args = parser.parse_args()
-        self.process_file(args.input, 2)
-        self.result_part_one = self.number_of_locations_visited_by_last_knot()
-        self.process_file(args.input, 10)
+        if args.input_file:
+            self.process_file(args.input_file, 2)
+            self.result_part_one = self.number_of_locations_visited_by_last_knot()
+            self.process_file(args.input_file, 2)
+        elif args.input_text:
+            self.process_file(args.input_text, 10, False)
+            self.result_part_one = self.number_of_locations_visited_by_last_knot()
+            self.process_file(args.input_text, 10, False)
         self.result_part_two = self.number_of_locations_visited_by_last_knot()
 
-    def process_file(self, input_file, number_of_knots):
+    def process_file(self, input_data, number_of_knots, is_file=True):
         """
         Reads the input file
         """
@@ -73,12 +82,15 @@ class Solution():
                 self.rope[number_of_knots-1].pos_y
             )
         }
-        with open(input_file, 'r', encoding="utf-8") as f:
-            all_instructions = f.read().splitlines()
-            for instruction in all_instructions:
-                if instruction:
-                    self.rope = self.determine_movement(
-                        self.rope, instruction.split())
+        if is_file:
+            with open(input_data, 'r', encoding="utf-8") as file:
+                all_instructions = file.read().splitlines()
+        else:
+            all_instructions = input_data.split("\n")
+        for instruction in all_instructions:
+            if instruction:
+                self.rope = self.determine_movement(
+                    self.rope, instruction.split())
         return self.rope
 
     def determine_movement(self, rope, instruction):

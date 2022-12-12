@@ -4,7 +4,9 @@ Solution to Day 6 of the Advent of Code 2022 event.
 
 https://adventofcode.com/2022/day/6
 
-Usage   : call with 'solution.py --input <input file name>'
+Usage:
+    If using an input file 'solution.py --input-file <input file name>'
+    If using text as input 'solution.py --input-text "<input>"'
 """
 
 import argparse

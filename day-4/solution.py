@@ -4,7 +4,7 @@ Solution to Day 4 of the Advent of Code 2022 event.
 
 https://adventofcode.com/2022/day/4
 
-Usage: 
+Usage:
     If using an input file 'solution.py --input-file <input file name>'
     If using text as input 'solution.py --input-text "<input>"'
 """
