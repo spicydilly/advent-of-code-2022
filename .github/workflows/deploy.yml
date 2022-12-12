@@ -27,5 +27,5 @@ jobs:
           chmod 700 ~/.ssh
           ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
-          scp -r * root@$SERVER_IP:/root/
-          # ssh root@$SERVER_IP "./var/www/$SITE_URL/html/start.sh"
+          scp -r * root@$SERVER_IP:/root/aoc2022
+          ssh root@$SERVER_IP "./root/aoc2022/start.sh"
