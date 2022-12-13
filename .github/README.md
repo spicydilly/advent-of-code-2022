@@ -19,4 +19,4 @@ pip install -r requirements.txt
 
 ## Flask
 
-This project is also deployed to <aoc.thedylon.com>. Built using [Flask](https://flask.palletsprojects.com/). Deployed as a container using GitHub Actions.
+This project is also deployed to <https://aoc.thedylon.com>. Built using [Flask](https://flask.palletsprojects.com/). Deployed as a container using GitHub Actions.
