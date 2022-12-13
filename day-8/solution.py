@@ -33,13 +33,13 @@ class Solution():
                             help="Input text")
         args = parser.parse_args()
         if args.input_file:
-            self.process_file(args.input_file)
+            self.process_input(args.input_file)
         elif args.input_text:
-            self.process_file(args.input_text, False)
+            self.process_input(args.input_text, False)
         self.result_part_one = self.get_number_of_visible_trees()
         self.result_part_two = self.find_ideal_view()
 
-    def process_file(self, input_data, is_file=True):
+    def process_input(self, input_data, is_file=True):
         """
         Reads the input
         """

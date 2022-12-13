@@ -99,16 +99,16 @@ class Solution():
                             help="Input text")
         args = parser.parse_args()
         if args.input_file:
-            self.process_file(args.input_file, 20, False)
+            self.process_input(args.input_file, 20, False)
             self.result_part_one = self.get_level_monkey_business()
-            self.process_file(args.input_file, 10000, True)
+            self.process_input(args.input_file, 10000, True)
         elif args.input_text:
-            self.process_file(args.input_text, 20, False, False)
+            self.process_input(args.input_text, 20, False, False)
             self.result_part_one = self.get_level_monkey_business()
-            self.process_file(args.input_text, 10000, True, False)
+            self.process_input(args.input_text, 10000, True, False)
         self.result_part_two = self.get_level_monkey_business()
 
-    def process_file(self, input_data, number_of_rounds, no_divide, is_file=True):
+    def process_input(self, input_data, number_of_rounds, no_divide, is_file=True):
         """
         Reads the input file
         """

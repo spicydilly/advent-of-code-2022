@@ -95,15 +95,15 @@ class Solution():
                             help="Input text")
         args = parser.parse_args()
         if args.input_file:
-            self.process_file(args.input_file)
+            self.process_input(args.input_file)
         elif args.input_text:
-            self.process_file(args.input_text, False)
+            self.process_input(args.input_text, False)
         self.result_part_one = self.get_sum_of_directories_that_meet_size(
             100000)
         self.result_part_two = self.smallest_directory_to_delete_to_meet_space(
             70000000, 30000000)
 
-    def process_file(self, input_data, is_file=True):
+    def process_input(self, input_data, is_file=True):
         """
         Reads the input, returns directory as dictionary
         """
@@ -153,11 +153,11 @@ class Solution():
         used = self.file_system.get_directory_sizes()
         unused = capacity - used["/"]
         smallest_size = capacity
-        for dir in used:
-            if dir == "/":
+        for directory in used:
+            if directory == "/":
                 continue
-            if used[dir] <= smallest_size and (unused + used[dir]) >= target:
-                smallest_size = used[dir]
+            if used[directory] <= smallest_size and (unused + used[directory]) >= target:
+                smallest_size = used[directory]
         return smallest_size
 
 

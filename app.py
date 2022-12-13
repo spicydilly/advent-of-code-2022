@@ -1,7 +1,7 @@
 import os
-import importlib
 from flask import Flask, render_template, request
 import subprocess
+from typing import List
 
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -9,7 +9,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 @app.route('/')
 def home_page():
-    return render_template('index.html', value="test")
+    present = get_days_present()
+    return render_template('index.html', days=present)
 
 
 @app.route('/day/<number>/')
@@ -31,6 +32,21 @@ def get_solution(number):
         ]
     )
     return solution
+
+
+def get_days_present() -> List[str]:
+    """Returns the days that are available"""
+    contents = os.listdir(basedir)
+    matches = []
+    for item in contents:
+        if "day-" in item:
+            matches.append(item)
+    matches.sort(key=lambda num: int("".join(filter(str.isdigit, num))))
+    result = ""
+    for day in matches:
+        link = day.split("-")[1]
+        result += f"<p><a href='/day/{link}'>Solution {day}</a></p>\n"
+    return result[:-1]
 
 
 def readme_convert(number):

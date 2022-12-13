@@ -32,14 +32,15 @@ class Solution():
                             help="Input text")
         args = parser.parse_args()
         if args.input_file:
-            self.result_part_one = self.process_file(args.input_file, 4)
-            self.result_part_two = self.process_file(args.input_file, 14)
+            self.result_part_one = self.process_input(args.input_file, 4)
+            self.result_part_two = self.process_input(args.input_file, 14)
         elif args.input_text:
-            self.result_part_one = self.process_file(args.input_text, 4, False)
-            self.result_part_two = self.process_file(
+            self.result_part_one = self.process_input(
+                args.input_text, 4, False)
+            self.result_part_two = self.process_input(
                 args.input_text, 14, False)
 
-    def process_file(self, input_data, marker_size, is_file=True):
+    def process_input(self, input_data, marker_size, is_file=True):
         """
         Reads the input and returns the number of characters
             that needed to be processes before the first start-of-packet

@@ -2,27 +2,88 @@
 """
 Solution to Day 12 of the Advent of Code 2022 event.
 
-https://adventofcode.com/2022/day/11
+https://adventofcode.com/2022/day/12
 
 Usage:
     If using an input file 'solution.py --input-file <input file name>'
     If using text as input 'solution.py --input-text "<input>"'
 """
-
+from dataclasses import dataclass, field
+from typing import Iterable, List, Dict
+from itertools import product
 import argparse
+import string
 
 
+@dataclass
+class Location:
+    """Class that defines the location of a hill"""
+    x: int
+    y: int
+
+
+@dataclass
+class Hill:
+    """Class that defines a Hill"""
+    height: int
+    visited: bool = False
+    climb_cost: int = None
+
+
+@dataclass
+class HeightMap:
+    """Class that defines the HeightMap"""
+    start: Location = None
+    end: Location = None
+    hills: list[list[Hill]] = field(default_factory=list)
+
+    def neighbors(self, location: Location) -> Iterable[Location]:
+        """Returns neighbors of the location that can be climbed"""
+        limit = self.hills[location.y][location.x].height + 1
+        possible_moves = [
+            Location(x, y) for (x, y) in [
+                (location.x - 1, location.y), (location.x + 1, location.y),
+                (location.x, location.y - 1), (location.x, location.y + 1)
+            ] if 0 <= x < len(self.hills[0]) and 0 <= y < len(self.hills)
+        ]
+        for neighbor in possible_moves:
+            if self.neighbor_location(neighbor).height <= limit:
+                yield neighbor
+
+    def neighbor_location(self, location: Location) -> Location:
+        """Returns Location object of neighbor"""
+        return self.hills[location.y][location.x]
+
+    def traverse(self, queue: list[tuple[int, Location, Location]] = None) -> None:
+        """Move along locations"""
+        if not queue:
+            queue = [(0, self.start, self.start)]
+        while queue:
+            curr_cost, curr_point, _ = queue.pop(0)
+            if not self.neighbor_location(curr_point).visited:
+                self.neighbor_location(curr_point).climb_cost = curr_cost
+                self.neighbor_location(curr_point).visited = True
+                if curr_point == self.end:
+                    break
+                curr_cost += 1
+                for next_location in self.neighbors(curr_point):
+                    queue.append((curr_cost, next_location, curr_point))
+                queue.sort(key=lambda l: l[0])
+
+
+@dataclass()
 class Solution():
     """
     Class that builds the solution
     """
 
-    def __init__(self):
-        self.monkeys = []
-        self.result_part_one = 0
-        self.result_part_two = 0
+    map_values: Dict[str, int] = field(default_factory=lambda: dict(
+        zip(string.ascii_lowercase, range(1, 27))))
+    input_data: List = field(default_factory=list)
+    result_part_one: int = 0
+    result_part_two: int = 0
 
-    def get_arguments(self):
+    def get_arguments(self) -> None:
         """
         Handles the arguments that are available for this class
         """
@@ -33,67 +94,60 @@ class Solution():
                             help="Input text")
         args = parser.parse_args()
         if args.input_file:
-            self.process_file(args.input_file, 20, False)
-            self.result_part_one = self.get_level_monkey_business()
-            self.process_file(args.input_file, 10000, True)
+            self.process_input(args.input_file)
         elif args.input_text:
-            self.process_file(args.input_text, 20, False, False)
-            self.result_part_one = self.get_level_monkey_business()
-            self.process_file(args.input_text, 10000, True, False)
-        self.result_part_two = self.get_level_monkey_business()
+            self.process_input(args.input_text, False)
+        self.result_part_one = self.traverse_start_to_end()
+        self.result_part_two = self.traverse_each_a_to_end()
 
-    def process_file(self, input_data, number_of_rounds, no_divide, is_file=True):
+    def process_input(self, input_data, is_file=True) -> None:
         """
         Reads the input file
         """
-        self.monkeys = []
         if is_file:
             with open(input_data, 'r', encoding="utf-8") as file:
-                monkeys = file.read().split("\n\n")
+                self.input_data = file.read().splitlines()
         else:
-            monkeys = input_data.split("\n\n")
-        for each in monkeys:
-            insructions = each.split("\n")
-            insructions = [x.split() for x in insructions]
-            holding = []
-            for item in insructions[1][2:]:
-                holding.append(Item(item))
-            operation = insructions[2][-2:]
-            test = insructions[3][-1]
-            on_true = insructions[4][-1]
-            on_false = insructions[5][-1]
-            monkey = Monkey(holding, operation, test, on_true, on_false)
-            self.monkeys.append(monkey)
-        # neat trick to keep numbers small, use least common multiple(lcm)
-        # eg, divide by lcm and set the remainder as the worry level
-        if no_divide:
-            no_divide = 1
-            for monkey in self.monkeys:
-                no_divide = no_divide * int(monkey.test)
-        self.run_rounds(number_of_rounds, no_divide)
+            self.input_data = input_data.splitlines()
 
-    def run_rounds(self, number_of_rounds, no_divide):
-        """
-        This function completes rounds
-        """
-        for _ in range(number_of_rounds):
-            for monkey in self.monkeys:
-                for _ in range(len(monkey.holding)):
-                    item = monkey.holding[0]
-                    throw_to = monkey.take_turn(no_divide)
-                    if throw_to:
-                        self.monkeys[int(throw_to)].holding.append(item)
+    def load_map(self) -> HeightMap:
+        """Load map from input_data"""
+        height_map = HeightMap()
+        for row in self.input_data:
+            height_map.hills.append([])
+            for hill in row:
+                if hill == "S":
+                    height_map.start = Location(
+                        x=len(height_map.hills[-1]),
+                        y=len(height_map.hills) - 1
+                    )
+                    hill = "a"
+                elif hill == "E":
+                    height_map.end = Location(
+                        x=len(height_map.hills[-1]),
+                        y=len(height_map.hills) - 1
+                    )
+                    hill = "z"
+                height_map.hills[-1].append(
+                    Hill(self.map_values[hill]))
+        return height_map
 
-    def get_level_monkey_business(self):
-        """
-        Returns the the level of monkey business.
+    def traverse_start_to_end(self) -> int:
+        """Traverse the map from start to end, return total climbs"""
+        map_data = self.load_map()
+        map_data.traverse()
+        return map_data.neighbor_location(map_data.end).climb_cost
 
-        Formula: top 2 monkeys by number of inspections, multiplied togther"""
-        monkey_business = []
-        for monkey in self.monkeys:
-            monkey_business.append(monkey.inspections)
-        monkey_business = sorted(monkey_business)
-        return monkey_business[-1] * monkey_business[-2]
+    def traverse_each_a_to_end(self) -> int:
+        """Traverse the map from all 'a' locations to end, return total climbs"""
+        map_data = self.load_map()
+        queue = []
+        for (x, y) in product(range(len(map_data.hills[0])), range(len(map_data.hills))):
+            coord = Location(x, y)
+            if map_data.neighbor_location(coord).height == 1:
+                queue.append((0, coord, coord))
+        map_data.traverse(queue)
+        return map_data.neighbor_location(map_data.end).climb_cost
 
 
 if __name__ == "__main__":

@@ -78,13 +78,13 @@ class Solution():
                             help="Input text")
         args = parser.parse_args()
         if args.input_file:
-            self.process_file(args.input_file)
+            self.process_input(args.input_file)
         elif args.input_text:
-            self.process_file(args.input_text, False)
+            self.process_input(args.input_text, False)
         self.result_part_one = self.sum_signal_monitor()
         self.result_part_two = self.get_crt()
 
-    def process_file(self, input_data, is_file=True):
+    def process_input(self, input_data, is_file=True):
         """
         Reads the input file
         """

@@ -58,16 +58,16 @@ class Solution():
                             help="Input text")
         args = parser.parse_args()
         if args.input_file:
-            self.process_file(args.input_file, 2)
+            self.process_input(args.input_file, 2)
             self.result_part_one = self.number_of_locations_visited_by_last_knot()
-            self.process_file(args.input_file, 10)
+            self.process_input(args.input_file, 10)
         elif args.input_text:
-            self.process_file(args.input_text, 2, False)
+            self.process_input(args.input_text, 2, False)
             self.result_part_one = self.number_of_locations_visited_by_last_knot()
-            self.process_file(args.input_text, 10, False)
+            self.process_input(args.input_text, 10, False)
         self.result_part_two = self.number_of_locations_visited_by_last_knot()
 
-    def process_file(self, input_data, number_of_knots, is_file=True):
+    def process_input(self, input_data, number_of_knots, is_file=True):
         """
         Reads the input file
         """

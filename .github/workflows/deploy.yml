@@ -2,7 +2,7 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - flask
+      - main
 
 env:
   SSH_PRIVATE_KEY: ${{secrets.SSH_KEY}}
