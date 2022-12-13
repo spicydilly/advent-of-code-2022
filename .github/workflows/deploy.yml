@@ -28,4 +28,4 @@ jobs:
           ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
           scp -r * root@$SERVER_IP:/root/aoc2022
-          ssh root@$SERVER_IP "cd /root/aoc2022/ && start.sh"
+          ssh root@$SERVER_IP "cd /root/aoc2022/ && bash start.sh"
