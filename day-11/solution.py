@@ -4,7 +4,9 @@ Solution to Day 11 of the Advent of Code 2022 event.
 
 https://adventofcode.com/2022/day/11
 
-Usage   : call with 'solution.py --input <input file name>'
+Usage:
+    If using an input file 'solution.py --input-file <input file name>'
+    If using text as input 'solution.py --input-text "<input>"'
 """
 
 import argparse
@@ -91,33 +93,43 @@ class Solution():
         Handles the arguments that are available for this class
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument("--input", type=str, required=True,
+        parser.add_argument("--input-file", type=str, required=False,
                             help="Input file")
+        parser.add_argument("--input-text", type=str, required=False,
+                            help="Input text")
         args = parser.parse_args()
-        self.process_file(args.input, 20, False)
-        self.result_part_one = self.get_level_monkey_business()
-        self.process_file(args.input, 10000, True)
+        if args.input_file:
+            self.process_input(args.input_file, 20, False)
+            self.result_part_one = self.get_level_monkey_business()
+            self.process_input(args.input_file, 10000, True)
+        elif args.input_text:
+            self.process_input(args.input_text, 20, False, False)
+            self.result_part_one = self.get_level_monkey_business()
+            self.process_input(args.input_text, 10000, True, False)
         self.result_part_two = self.get_level_monkey_business()
 
-    def process_file(self, input_file, number_of_rounds, no_divide):
+    def process_input(self, input_data, number_of_rounds, no_divide, is_file=True):
         """
         Reads the input file
         """
         self.monkeys = []
-        with open(input_file, 'r', encoding="utf-8") as f:
-            monkeys = f.read().split("\n\n")
-            for each in monkeys:
-                insructions = each.split("\n")
-                insructions = [x.split() for x in insructions]
-                holding = []
-                for item in insructions[1][2:]:
-                    holding.append(Item(item))
-                operation = insructions[2][-2:]
-                test = insructions[3][-1]
-                on_true = insructions[4][-1]
-                on_false = insructions[5][-1]
-                monkey = Monkey(holding, operation, test, on_true, on_false)
-                self.monkeys.append(monkey)
+        if is_file:
+            with open(input_data, 'r', encoding="utf-8") as file:
+                monkeys = file.read().split("\n\n")
+        else:
+            monkeys = input_data.split("\n\n")
+        for each in monkeys:
+            insructions = each.split("\n")
+            insructions = [x.split() for x in insructions]
+            holding = []
+            for item in insructions[1][2:]:
+                holding.append(Item(item))
+            operation = insructions[2][-2:]
+            test = insructions[3][-1]
+            on_true = insructions[4][-1]
+            on_false = insructions[5][-1]
+            monkey = Monkey(holding, operation, test, on_true, on_false)
+            self.monkeys.append(monkey)
         # neat trick to keep numbers small, use least common multiple(lcm)
         # eg, divide by lcm and set the remainder as the worry level
         if no_divide:

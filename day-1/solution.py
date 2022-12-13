@@ -4,24 +4,36 @@ Solution to Day 1 of the Advent of Code 2022 event.
 
 https://adventofcode.com/2022/day/1
 
-Usage   : call with 'solution.py --input <input file name>'
+Usage: 
+    If using an input file 'solution.py --input-file <input file name>'
+    If using text as input 'solution.py --input-text "<input>"'
 """
 
 import argparse
-from ast import parse
 
 
 class Solution():
+    """
+    Class that builds the solution
+    """
+
+    def __init__(self):
+        self.calories_by_elf = []
 
     def get_arguments(self):
         """
         Handles the arguments that are available for this class
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument("--input", type=str, required=False,
+        parser.add_argument("--input-file", type=str, required=False,
                             help="Input file")
-        self.args = parser.parse_args()
-        self.get_groupings_from_file(self.args.input)
+        parser.add_argument("--input-text", type=str, required=False,
+                            help="Input text")
+        args = parser.parse_args()
+        if args.input_file:
+            self.get_groupings_from_input(args.input_file)
+        elif args.input_text:
+            self.get_groupings_from_input(args.input_text, False)
 
     def get_max(self):
         """
@@ -37,28 +49,32 @@ class Solution():
         Returns the sum of the top 3 largest amount of calories
         """
         result = []
-        for elf in range(3):
+        for _ in range(3):
             current_max_elf = self.get_max()
             result += [self.calories_by_elf[current_max_elf]]
             self.calories_by_elf.pop(current_max_elf)
         return sum(result)
 
-    def get_groupings_from_file(self, input_file):
+    def get_groupings_from_input(self, input_data, is_file=True):
         """
-        Reads the input file and returns the total calories consumed
+        Reads input and returns the total calories consumed
             by each elf
         """
         calories_by_elf = {}
         elf = 0
-        with open(input_file, 'r') as f:
-            # split by empty newlines in file
-            for grouping in f.read().split("\n\n"):
-                # split by line, ignoring empty if the value is empty
-                calories = list(filter(None, grouping.split("\n")))
-                # convert the list values to integers
-                calories = map(int, calories)
-                calories_by_elf[elf] = sum(calories)
-                elf += 1
+        input_split = []
+        if is_file:
+            with open(input_data, 'r', encoding="utf-8") as file:
+                input_split = file.read().split("\n\n")
+        else:
+            input_split = input_data.split("\n\n")
+        for grouping in input_split:
+            # split by line, ignoring empty if the value is empty
+            calories = list(filter(None, grouping.split("\n")))
+            # convert the list values to integers
+            calories = map(int, calories)
+            calories_by_elf[elf] = sum(calories)
+            elf += 1
         self.calories_by_elf = calories_by_elf
         return
 

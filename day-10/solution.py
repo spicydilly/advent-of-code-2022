@@ -4,7 +4,9 @@ Solution to Day 10 of the Advent of Code 2022 event.
 
 https://adventofcode.com/2022/day/10
 
-Usage   : call with 'solution.py --input <input file name>'
+Usage:
+    If using an input file 'solution.py --input-file <input file name>'
+    If using text as input 'solution.py --input-text "<input>"'
 """
 
 import argparse
@@ -70,26 +72,34 @@ class Solution():
         Handles the arguments that are available for this class
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument("--input", type=str, required=True,
+        parser.add_argument("--input-file", type=str, required=False,
                             help="Input file")
+        parser.add_argument("--input-text", type=str, required=False,
+                            help="Input text")
         args = parser.parse_args()
-        self.process_file(args.input)
+        if args.input_file:
+            self.process_input(args.input_file)
+        elif args.input_text:
+            self.process_input(args.input_text, False)
         self.result_part_one = self.sum_signal_monitor()
         self.result_part_two = self.get_crt()
 
-    def process_file(self, input_file):
+    def process_input(self, input_data, is_file=True):
         """
         Reads the input file
         """
-        with open(input_file, 'r', encoding="utf-8") as f:
-            all_instructions = f.read().splitlines()
-            for instruction in all_instructions:
-                if instruction:
-                    instruction = instruction.split()
+        if is_file:
+            with open(input_data, 'r', encoding="utf-8") as file:
+                all_instructions = file.read().splitlines()
+        else:
+            all_instructions = input_data.split("\n")
+        for instruction in all_instructions:
+            if instruction:
+                instruction = instruction.split()
+                self.executor.cycle_increment()
+                if instruction[0] == "addx":
                     self.executor.cycle_increment()
-                    if instruction[0] == "addx":
-                        self.executor.cycle_increment()
-                        self.executor.cycle_add_value(instruction[1])
+                    self.executor.cycle_add_value(instruction[1])
 
     def sum_signal_monitor(self):
         """

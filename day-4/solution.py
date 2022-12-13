@@ -4,29 +4,52 @@ Solution to Day 4 of the Advent of Code 2022 event.
 
 https://adventofcode.com/2022/day/4
 
-Usage   : call with 'solution.py --input <input file name>'
+Usage:
+    If using an input file 'solution.py --input-file <input file name>'
+    If using text as input 'solution.py --input-text "<input>"'
 """
 
 import argparse
-from ast import parse
 
 
 class Solution():
+    """
+    Class that builds the solution
+    """
+
+    def __init__(self):
+        self.sections = []
+        self.result_part_one = 0
+        self.result_part_two = 0
 
     def get_arguments(self):
         """
         Handles the arguments that are available for this class
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument("--input", type=str, required=False,
+        parser.add_argument("--input-file", type=str, required=False,
                             help="Input file")
-        self.args = parser.parse_args()
-        self.result_part_one = self.get_overlapping_sections_from_file(
-            self.args.input)
-        self.result_part_two = self.get_overlapping_sections_from_file(
-            self.args.input, True)
+        parser.add_argument("--input-text", type=str, required=False,
+                            help="Input text")
+        args = parser.parse_args()
+        if args.input_file:
+            self.get_sections_from_input(args.input_file)
+        elif args.input_text:
+            self.get_sections_from_input(args.input_text, False)
+        self.result_part_one = self.get_overlapping_sections()
+        self.result_part_two = self.get_overlapping_sections(True)
 
-    def get_overlapping_sections_from_file(self, input_file, partial=False):
+    def get_sections_from_input(self, input_data, is_file=True):
+        """Proccesses the input"""
+        input_split = []
+        if is_file:
+            with open(input_data, 'r', encoding="utf-8") as file:
+                input_split = file.read().split("\n")
+        else:
+            input_split = input_data.split("\n")
+        self.sections = input_split
+
+    def get_overlapping_sections(self, partial=False):
         """
         Reads the input file and returns the number of overlapping
             sections in a file
@@ -35,15 +58,14 @@ class Solution():
             any sort of overlap
         """
         total_overlap = 0
-        with open(input_file, 'r') as f:
-            for pairs in f.read().split("\n"):
-                # split by line, ignoring empty if the value is empty
-                if pairs:
-                    pair = pairs.split(",")
-                    if partial:
-                        total_overlap += self.check_for_partial_overlap(pair)
-                    else:
-                        total_overlap += self.check_for_full_overlap(pair)
+        for pairs in self.sections:
+            # split by line, ignoring empty if the value is empty
+            if pairs:
+                pair = pairs.split(",")
+                if partial:
+                    total_overlap += self.check_for_partial_overlap(pair)
+                else:
+                    total_overlap += self.check_for_full_overlap(pair)
 
         return total_overlap
 
