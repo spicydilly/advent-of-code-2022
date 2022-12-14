@@ -60,7 +60,13 @@ def readme_convert(number):
         for line in file.read().splitlines():
             split_line = line.split()
             if split_line:
-                if split_line[0] == "#":  # header
+                if block:
+                    if "```" == split_line[0]:  # end of block of text
+                        problem += "</code></pre>"
+                        block = False
+                    else:
+                        problem += f"{line}\n"
+                elif split_line[0] == "#":  # header
                     problem += f"<h1>{line[2:]}</h1>\n"
                 elif split_line[0] == "##":  # sub header
                     if split_line[1] == "Tests":  # ignore all after this line
@@ -69,9 +75,6 @@ def readme_convert(number):
                 elif "```txt" == split_line[0]:  # block of text
                     problem += "<pre><code>"
                     block = True
-                elif "```" == split_line[0]:  # end of block of text
-                    problem += "</code></pre>"
-                    block = False
                 elif split_line[0][-1] == ".":  # numbered list
                     if problem[-5:] == "</ol>":
                         problem = problem[:-5]
@@ -87,8 +90,8 @@ def readme_convert(number):
                         problem += "<ul>\n"
                     problem += f"<li>{' '.join(split_line[1:])}</li>\n</ul>"
                 else:
-                    if block or line == "":
-                        problem += f"{line}\n"
+                    if line == "":
+                        problem += "\n"
                     else:
                         problem += f"\n<p>{line}</p>\n"
     return problem

@@ -9,7 +9,6 @@ Usage:
     If using text as input 'solution.py --input-text "<input>"'
 """
 from dataclasses import dataclass, field
-from typing import Iterable, List, Dict
 from itertools import product
 import argparse
 import string
@@ -37,7 +36,7 @@ class HeightMap:
     end: Location = None
     hills: list[list[Hill]] = field(default_factory=list)
 
-    def neighbors(self, location: Location) -> Iterable[Location]:
+    def neighbors(self, location: Location) -> Location:
         """Returns neighbors of the location that can be climbed"""
         limit = self.hills[location.y][location.x].height + 1
         possible_moves = [
@@ -77,9 +76,9 @@ class Solution():
     Class that builds the solution
     """
 
-    map_values: Dict[str, int] = field(default_factory=lambda: dict(
+    map_values: dict[str, int] = field(default_factory=lambda: dict(
         zip(string.ascii_lowercase, range(1, 27))))
-    input_data: List = field(default_factory=list)
+    input_data: list = field(default_factory=list)
     result_part_one: int = 0
     result_part_two: int = 0
 

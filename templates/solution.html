@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" type="text/css" href="/static/style.css" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -18,11 +19,17 @@
 </head>
 
 <body>
-    {{ info|safe }}
+    <div class="row">
+        <div class="column left">
+            {{ info|safe }}
+        </div>
+        <div class="column right">
+            <p><label for="user_in">Your Input:</label></p>
+            <textarea id="user_in" name="user_in" cols="40" rows="5"></textarea>
+            <button>Get Results</button>
+        </div>
+    </div>
 
-    <p><label for="user_in">Your Input:</label></p>
-    <textarea id="user_in" name="user_in" cols="40" rows="5"></textarea>
-    <button>Get Results</button>
 
 </body>
 
