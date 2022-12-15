@@ -70,7 +70,7 @@ class HeightMap:
                 queue.sort(key=lambda l: l[0])
 
 
-@dataclass()
+@dataclass
 class Solution():
     """
     Class that builds the solution
