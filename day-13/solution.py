@@ -55,7 +55,7 @@ class Pairs:
         return None
 
 
-@dataclass()
+@dataclass
 class Solution():
     """Class that builds the solution"""
 
